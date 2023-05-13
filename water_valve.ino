@@ -1,39 +1,52 @@
-#define VANA_1 A0
-#define VANA_2 A1
-#define VANA_3 A2
-#define VANA_4 A3
-#define VANA_5 A4
+#include <Arduino.h>
 
-#define SU_MOTORU 2
+// Define valve sensors and water pump pins
+#define VALVE_SENSOR1 A0
+#define VALVE_SENSOR2 A1
+#define VALVE_SENSOR3 A2
+#define VALVE_SENSOR4 A3
+#define VALVE_SENSOR5 A4
+
+#define WATER_PUMP_PIN 2
 
 void setup()
 {
+    // Start serial communication for debugging
 #ifdef DEBUG
     Serial.begin(9600);
 #endif
-    pinMode(SU_MOTORU, OUTPUT);
+    // Set the water pump pin mode to output
+    pinMode(WATER_PUMP_PIN, OUTPUT);
 }
 
 void loop()
 {
-    int vana_1_value = analogRead(VANA_1);
-    int vana_2_value = analogRead(VANA_2);
-    int vana_3_value = analogRead(VANA_3);
-    int vana_4_value = analogRead(VANA_4);
-    int vana_5_value = analogRead(VANA_5);
+    // Read values from valve sensors
+    int valve1Value = analogRead(VALVE_SENSOR1);
+    int valve2Value = analogRead(VALVE_SENSOR2);
+    int valve3Value = analogRead(VALVE_SENSOR3);
+    int valve4Value = analogRead(VALVE_SENSOR4);
+    int valve5Value = analogRead(VALVE_SENSOR5);
 
+    // Print sensor values for debugging
 #ifdef DEBUG
-    Serial.println("Vana 1: " + String(vana_1_value) + " Vana 2: " + String(vana_2_value) + " Vana 3: " + String(vana_3_value) + " Vana 4: " + String(vana_4_value) + " Vana 5: " + String(vana_5_value));
+    Serial.println("Valve 1: " + String(valve1Value) +
+                   " Valve 2: " + String(valve2Value) +
+                   " Valve 3: " + String(valve3Value) +
+                   " Valve 4: " + String(valve4Value) +
+                   " Valve 5: " + String(valve5Value));
 #endif
 
-    if ((vana_1_value < 950) && (vana_2_value < 950) && (vana_3_value < 950) && (vana_4_value < 950) && (vana_5_value < 950))
+    // If all valves are below threshold, turn off the water pump, otherwise turn it on
+    if (valve1Value < 950 && valve2Value < 950 && valve3Value < 950 && valve4Value < 950 && valve5Value < 950)
     {
-        digitalWrite(SU_MOTORU, LOW);
+        digitalWrite(WATER_PUMP_PIN, LOW);
     }
     else
     {
-        digitalWrite(SU_MOTORU, HIGH);
+        digitalWrite(WATER_PUMP_PIN, HIGH);
     }
 
+    // Wait before the next loop iteration
     delay(2000);
 }
